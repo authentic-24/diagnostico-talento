@@ -1,9 +1,16 @@
 FROM php:8.2-apache
 
-# Instala dependencias necesarias
+# Instala dependencias necesarias del sistema y PHP
 RUN apt-get update && apt-get install -y \
-    libpng-dev libonig-dev libxml2-dev zip unzip git curl \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Instala Composer
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
@@ -11,13 +18,13 @@ COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 # Establece directorio de trabajo
 WORKDIR /var/www/html
 
-# Copia primero composer.json y composer.lock (para usar cache de capas)
+# Copia primero composer.json y composer.lock (para cache eficiente)
 COPY composer.json composer.lock ./
 
 # Instala dependencias PHP (sin dev para producción)
 RUN composer install --no-dev --optimize-autoloader
 
-# Ahora copia el resto del código
+# Copia el resto del código
 COPY . .
 
 # Da permisos a storage y bootstrap/cache
