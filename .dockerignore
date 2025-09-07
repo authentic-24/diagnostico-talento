@@ -1,4 +1,13 @@
-vendor
-node_modules
-.git
+vendor/
+node_modules/
 .env
+.env.*
+.git
+.gitignore
+.idea
+*.log
+storage/*.key
+storage/*.log
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/cache/*
