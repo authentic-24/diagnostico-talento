@@ -56,21 +56,33 @@
                     </div>
                 </div>
 
-                <div class="mt-0 flex flex-col gap-2">
-                    @php
-                        $palette = ['#3b82f6','#f59e42','#ef4444','#a855f7','#eab308','#14b8a6','#6366f1','#f43f5e','#64748b','#222'];
-                    @endphp
-                    @foreach($labels as $i => $label)
-                        @php
-                            $color = $palette[$i % count($palette)];
-                            $score = isset($data[$i]) ? $data[$i] : '-';
-                        @endphp
-                        <div class="flex items-center gap-2">
-                            <span class="inline-block w-4 h-4 rounded-full" style="background-color:{{ $color }};"></span>
-                            <span class="text-sm text-gray-700">{{ $label }}</span>
-                            <span class="ml-2 text-xs text-gray-900 font-semibold">{{ $score }}</span>
-                        </div>
-                    @endforeach
+                <div class="mt-0">
+                    <table class="min-w-full bg-white border rounded-lg mb-6">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="px-4 py-2 border">Ítem</th>
+                                <th class="px-4 py-2 border">Puntaje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $palette = ['#3b82f6','#f59e42','#ef4444','#a855f7','#eab308','#14b8a6','#6366f1','#f43f5e','#64748b','#222'];
+                            @endphp
+                            @foreach($labels as $i => $label)
+                                @php
+                                    $color = $palette[$i % count($palette)];
+                                    $score = isset($data[$i]) ? $data[$i] : '-';
+                                @endphp
+                                <tr>
+                                    <td class="px-4 py-2 border flex items-center gap-2">
+                                        <span class="inline-block w-4 h-4 rounded-full" style="background-color:{{ $color }};"></span>
+                                        <span class="text-sm text-gray-700">{{ $label }}</span>
+                                    </td>
+                                    <td class="px-4 py-2 border text-center font-bold">{{ $score }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="mt-8">
@@ -121,7 +133,10 @@
                                 borderColor: '#888888', // gris
                                 borderWidth: 2,
                                 pointBackgroundColor: colors,
-                                pointBorderColor: colors
+                                pointBorderColor: colors,
+                                pointRadius: 10, // tamaño de los puntos
+                                pointHoverRadius: 14, // tamaño al pasar el mouse
+                                pointBorderWidth: 4 // borde más grueso
                             }]
                         },
                         options: {

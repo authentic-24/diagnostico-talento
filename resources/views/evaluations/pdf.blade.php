@@ -30,22 +30,32 @@
             </div>
         @endif
         @if(!empty($labels) && !empty($data))
-            <div style="margin-bottom:12px;">
-                @php
-                    $palette = ['#22c55e','#3b82f6','#f59e42','#ef4444','#a855f7','#eab308','#14b8a6','#6366f1','#f43f5e','#64748b'];
-                @endphp
-                @foreach($labels as $i => $label)
+            <table style="width:100%; border-collapse:collapse; margin-bottom:18px;">
+                <thead>
+                    <tr style="background:#f3f3f3;">
+                        <th style="border:1px solid #ccc; padding:8px; text-align:left;">Ítem</th>
+                        <th style="border:1px solid #ccc; padding:8px; text-align:center;">Puntaje</th>
+                    </tr>
+                </thead>
+                <tbody>
                     @php
-                        $color = $palette[$i % count($palette)];
-                        $percent = isset($data[$i]) ? round(($data[$i] / 4) * 100) : 0;
+                        $palette = ['#22c55e','#3b82f6','#f59e42','#ef4444','#a855f7','#eab308','#14b8a6','#6366f1','#f43f5e','#64748b'];
                     @endphp
-                    <div style="display:flex;align-items:center;margin-bottom:4px;">
-                        <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:{{ $color }};margin-right:8px;"></span>
-                        <span style="font-size:0.95em;color:#333;margin-right:8px;">{{ $label }}</span>
-                        <span style="font-size:0.85em;color:#666;font-weight:bold;">{{ $data[$i] ?? '-' }}</span>
-                    </div>
-                @endforeach
-            </div>
+                    @foreach($labels as $i => $label)
+                        @php
+                            $color = $palette[$i % count($palette)];
+                            $score = isset($data[$i]) ? $data[$i] : '-';
+                        @endphp
+                        <tr>
+                            <td style="border:1px solid #ccc; padding:8px; display:flex; align-items:center; gap:8px;">
+                                <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:{{ $color }};margin-right:8px;"></span>
+                                <span style="font-size:0.95em;color:#333;">{{ $label }}</span>
+                            </td>
+                            <td style="border:1px solid #ccc; padding:8px; text-align:center; font-weight:bold;">{{ $score }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         @endif
         <h4 style="font-size:1.2em; font-weight:bold; margin-bottom:10px;">Informe diagnóstico</h4>
     <div style="font-size:1em; white-space:pre-line; margin-top:-16px; line-height:1.05;">
