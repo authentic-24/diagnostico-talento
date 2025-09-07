@@ -160,18 +160,13 @@ class EvaluationController extends Controller
             ]);
         }
 
-        // Calcular el porcentaje ponderado considerando todas las preguntas de los ítems
-        $items = $evaluation->subject ? $evaluation->subject->items : collect();
-        $totalQuestions = 0;
-        foreach ($items as $item) {
-            $totalQuestions += $item->questions->count();
-        }
+        // Calcular el puntaje promedio en escala 1-4
         $responses = \App\Models\Response::where('evaluation_id', $evaluation->id)->get();
-        $maxScore = $totalQuestions * 4;
+        $totalQuestions = $responses->count();
         $sumScore = $responses->sum('value');
-        $porcentajePonderado = $maxScore > 0 ? round(($sumScore / $maxScore) * 100, 2) : 0;
+        $avgScore = $totalQuestions > 0 ? round($sumScore / $totalQuestions, 2) : 0;
         $evaluation->status = 'completed';
-        $evaluation->total_score = $porcentajePonderado;
+        $evaluation->total_score = $avgScore;
         $evaluation->completed_at = now();
         $evaluation->save();
 

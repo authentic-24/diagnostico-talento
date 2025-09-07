@@ -24,6 +24,11 @@
         </div>
     </div>
     <div class="section">
+        @if(isset($chartImage))
+            <div style="text-align:center; margin-bottom:20px;">
+                <img src="{{ $chartImage }}" alt="Gráfico de resultados" style="max-width:700px; width:100%;">
+            </div>
+        @endif
         @if(!empty($labels) && !empty($data))
             <div style="margin-bottom:12px;">
                 @php
@@ -37,14 +42,9 @@
                     <div style="display:flex;align-items:center;margin-bottom:4px;">
                         <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:{{ $color }};margin-right:8px;"></span>
                         <span style="font-size:0.95em;color:#333;margin-right:8px;">{{ $label }}</span>
-                        <span style="font-size:0.85em;color:#666;font-weight:bold;">{{ $percent }}%</span>
+                        <span style="font-size:0.85em;color:#666;font-weight:bold;">{{ $data[$i] ?? '-' }}</span>
                     </div>
                 @endforeach
-            </div>
-        @endif
-        @if(isset($chartImage))
-            <div style="text-align:center; margin-bottom:20px;">
-                <img src="{{ $chartImage }}" alt="Gráfico de resultados" style="max-width:400px; width:100%;">
             </div>
         @endif
         <h4 style="font-size:1.2em; font-weight:bold; margin-bottom:10px;">Informe diagnóstico</h4>

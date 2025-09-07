@@ -11,22 +11,29 @@
 
 
         <!-- Empresa -->
+        <!-- Cargo -->
+        
         <div class="mt-4">
-            <x-input-label for="empresa" :value="'Empresa'" />
+            <x-input-label for="empresa" :value="'Organización'" />
             <x-text-input id="empresa" class="block mt-1 w-full" type="text" name="empresa" :value="old('empresa')" required autocomplete="organization" placeholder="Nombre de la empresa" />
             <x-input-error :messages="$errors->get('empresa')" class="mt-2" />
+        </div>
+        <div class="mt-4">
+            <x-input-label for="cargo" :value="'Cargo'" />
+            <x-text-input id="cargo" class="block mt-1 w-full" type="text" name="cargo" :value="old('cargo')" required autocomplete="organization-title" placeholder="Ejemplo: Gerente, Analista, etc." />
+            <x-input-error :messages="$errors->get('cargo')" class="mt-2" />
         </div>
 
         <!-- Teléfono -->
         <div class="mt-4">
-            <x-input-label for="telefono" :value="'Teléfono'" />
+            <x-input-label for="telefono" :value="'Movil'" />
             <x-text-input id="telefono" class="block mt-1 w-full" type="text" name="telefono" :value="old('telefono')" required autocomplete="tel" placeholder="Ejemplo: 999999999" />
             <x-input-error :messages="$errors->get('telefono')" class="mt-2" />
         </div>
 
         <!-- Correo electrónico -->
         <div class="mt-4">
-            <x-input-label for="email" :value="'Correo electrónico'" />
+            <x-input-label for="email" :value="'Email'" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="ejemplo@correo.com" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>

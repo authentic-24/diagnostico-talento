@@ -23,24 +23,68 @@
                     @php
                         $items = $evaluation->subject ? $evaluation->subject->items : collect();
                         $responses = $evaluation->status === 'completed' ? \App\Models\Response::where('evaluation_id', $evaluation->id)->get()->keyBy('question_id') : collect();
+                        $itemIcons = [
+                            'fa-layer-group', // Valores Organizacionales
+                            'fa-star', // Principios de Experiencia
+                            'fa-people-group', // Libertad y Colaboración
+                            'fa-book-open', // Gestión del Conocimiento
+                            'fa-chart-line', // Plan de Desarrollo
+                            'fa-microchip', // Tecnología
+                            'fa-user-astronaut', // Auto liderazgo
+                            'fa-gift', // Beneficios
+                            'fa-heart-pulse', // Bienestar y Salud Mental
+                            'fa-dumbbell', // Salud Física y Flexibilidad
+                        ];
                     @endphp
                     @if($evaluation->status !== 'completed')
                         <form action="{{ route('evaluations.submit', $evaluation) }}" method="POST"
                               onsubmit="return confirm('¿Seguro que deseas enviar esta evaluación?')">
                             @csrf
+                            <div class="mb-6">
+                                <h4 class="text-md font-bold mb-2">Guía de opciones de respuesta:</h4>
+                                <ul class="list-disc pl-6 text-gray-700 text-sm">
+                                    <li><strong>Casi nunca:</strong> Este nivel indica que la acción ocurre con muy poca frecuencia. Es un paso por encima de "Nunca," pero aún es extremadamente infrecuente.</li>
+                                    <li><strong>Ocasionalmente:</strong> Este es el punto medio, donde la acción se produce, pero no de forma constante ni predecible. Refleja una frecuencia irregular.</li>
+                                    <li><strong>Frecuentemente:</strong> En este nivel, la acción ocurre de forma habitual, más que esporádicamente, pero sin llegar a ser una constante total.</li>
+                                    <li><strong>Constantemente:</strong> Este punto final indica que la acción o el comportamiento se produce en todas las ocasiones o de forma continua.</li>
+                                </ul>
+                            </div>
                             @forelse ($items as $iIndex => $item)
+                                @php
+                                    $color = $iIndex % 2 === 0 ? 'text-blue-700' : 'text-green-600';
+                                    $icon = $itemIcons[$iIndex % count($itemIcons)];
+                                @endphp
                                 <div class="mb-10 pb-6 border-b border-gray-200">
-                                    <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+                                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2 {{ $color }}">
                                         <span class="text-gray-400">{{ $iIndex+1 }}.</span>
-                                        <i class="fa-solid fa-layer-group text-blue-400"></i>
+                                        <i class="fa-solid {{ $icon }} {{ $color }}"></i>
                                         {{ $item->title }}
                                     </h3>
+                                    @if(!empty($item->description))
+                                        <div class="mb-4 text-gray-600 text-sm italic">
+                                            {!! preg_replace(
+                                                '/(?<!href=")https:\/\/yo-soy\.co\//',
+                                                '<a href="https://yo-soy.co/" target="_blank" class="text-blue-600 underline">https://yo-soy.co/</a>',
+                                                $item->description
+                                            ) !!}
+                                        </div>
+                                    @endif
                                     <div class="grid gap-6">
                                     @forelse ($item->questions as $question)
                                         <div class="mb-0 p-4 sm:p-6 border rounded-lg bg-gray-50 shadow-sm">
                                             <label class="block font-medium text-gray-700 mb-3 flex items-center gap-2">
-                                                <i class="fa-regular fa-circle-question text-indigo-500"></i>
-                                                <span class="break-words">{{ $question->text }}</span>
+                                                {{-- <i class="fa-regular fa-circle-question text-indigo-500"></i> --}}
+                                                <span class="break-words">
+                                                    {!! preg_replace([
+                                                        '/https:\/\/yo-soy\.co\//',
+                                                        '/https:\/\/www\.docokids\.com/',
+                                                        '/Empathica\.com\.co\/empresas/'
+                                                    ], [
+                                                        '<a href="https://yo-soy.co/" target="_blank" class="text-blue-600 underline">https://yo-soy.co/</a>',
+                                                        '<a href="https://www.docokids.com" target="_blank" class="text-blue-600 underline">https://www.docokids.com</a>',
+                                                        '<a href="https://empathica.com.co/iniciar-sesion" target="_blank" class="text-blue-600 underline">https://empathica.com.co/iniciar-sesion</a>'
+                                                    ], $question->text) !!}
+                                                </span>
                                                 @if($question->required)
                                                     <span class="text-red-500">*</span>
                                                 @endif
@@ -67,6 +111,7 @@
                             @empty
                                 <p class="text-gray-500">No hay ítems para este tema.</p>
                             @endforelse
+                            
                             <div class="mt-8 flex flex-col sm:flex-row justify-end gap-4">
                                 <button type="submit"
                                         class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg text-lg font-bold flex items-center gap-2 w-full sm:w-auto">
@@ -74,32 +119,32 @@
                                 </button>
                             </div>
                         </form>
-                        @else
-                            @forelse ($items as $item)
-                                <div class="mb-8">
-                                    <h3 class="text-lg font-semibold text-blue-700 mb-2">{{ $item->title }}</h3>
-                                    @forelse ($item->questions as $question)
-                                        <div class="mb-4 p-4 border rounded-md bg-gray-50">
-                                            <label class="block font-medium text-gray-700 mb-2">
-                                                {{ $question->text }}
-                                            </label>
-                                            @php
-                                                $response = $responses->has($question->id) ? $responses[$question->id]->value : null;
-                                                $optionLabels = [4 => 'Totalmente de acuerdo', 3 => 'De acuerdo', 2 => 'En desacuerdo', 1 => 'Totalmente en desacuerdo'];
-                                            @endphp
-                                            <div class="mt-2">
-                                                <span class="text-green-700 font-bold">Respuesta enviada:</span>
-                                                <span class="ml-2 text-blue-700 font-semibold">{{ $optionLabels[$response] ?? '-' }}</span>
-                                            </div>
+                    @else
+                        @forelse ($items as $item)
+                            <div class="mb-8">
+                                <h3 class="text-lg font-semibold text-blue-700 mb-2">{{ $item->title }}</h3>
+                                @forelse ($item->questions as $question)
+                                    <div class="mb-4 p-4 border rounded-md bg-gray-50">
+                                        <label class="block font-medium text-gray-700 mb-2">
+                                            {{ $question->text }}
+                                        </label>
+                                        @php
+                                            $response = $responses->has($question->id) ? $responses[$question->id]->value : null;
+                                            $optionLabels = [4 => 'Totalmente de acuerdo', 3 => 'De acuerdo', 2 => 'En desacuerdo', 1 => 'Totalmente en desacuerdo'];
+                                        @endphp
+                                        <div class="mt-2">
+                                            <span class="text-green-700 font-bold">Respuesta enviada:</span>
+                                            <span class="ml-2 text-blue-700 font-semibold">{{ $optionLabels[$response] ?? '-' }}</span>
                                         </div>
-                                    @empty
-                                        <p class="text-gray-500">No hay preguntas para este ítem.</p>
-                                    @endforelse
-                                </div>
-                            @empty
-                                <p class="text-gray-500">No hay ítems para este tema.</p>
-                            @endforelse
-                        @endif
+                                    </div>
+                                @empty
+                                    <p class="text-gray-500">No hay preguntas para este ítem.</p>
+                                @endforelse
+                            </div>
+                        @empty
+                            <p class="text-gray-500">No hay ítems para este tema.</p>
+                        @endforelse
+                    @endif
                 </div>
 
                 <div class="mt-4 flex gap-4">

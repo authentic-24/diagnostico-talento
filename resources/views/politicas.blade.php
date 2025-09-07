@@ -1,16 +1,13 @@
 @extends('layouts.politicas')
 
 @section('content')
-    <h3 class="text-lg font-bold mb-4">Políticas de Privacidad</h3>
+    <h3 class="text-lg font-bold mb-4">Política de Tratamiento de Datos Personales</h3>
     <p class="mb-6 text-gray-700">
-        Tu información personal será tratada con confidencialidad y solo se usará para los fines de la plataforma . No compartiremos tus datos con terceros sin tu consentimiento, salvo obligación legal.
+        AUTHENTICFARMA, plataforma de propiedad de INGENIOS EMPRESA DE SERVICIOS S.A.S informa que en cumplimiento de la Ley 1581 de 2012 y el Decreto 1377 de 2013, los datos personales suministrados serán tratados de manera confidencial, con la finalidad de ejecutar las relaciones contractuales, precontractuales y comerciales que surjan entre usted(es) e INGENIOS EMPRESA DE SERVICIOS S.A.S, así como las que se relación al mejoramiento el servicio y la experiencia de usuario. Y los usuarios por el uso de INGENIOS EMPRESA DE SERVICIOS S.A.S, y demás finalidades contenidas en la Política de Protección de Datos Personales de INGENIOS EMPRESA DE SERVICIOS S.A.S, para la plataforma AUTHENTICFARMA la cual puede consultar aquí, en donde además se encontrará los canales y procedimientos dispuestos para la atención de consultas o el ejercicio de derechos de acceso, actualización, rectificación y supresión sobre los datos personales. También se puede(n) contactar al correo electrónico <a href="mailto:info@authenticfarma.com.co" class="underline text-blue-600">info@authenticfarma.com.co</a>
     </p>
-    <h3 class="text-lg font-bold mb-4">Términos de Uso</h3>
+    <h3 class="text-lg font-bold mb-4">Términos y Condiciones de Uso</h3>
     <p class="mb-6 text-gray-700">
-        Al registrarte y usar la plataforma , aceptas cumplir con las normas de la plataforma, proporcionar información verídica y respetar la privacidad de otros usuarios. El uso indebido puede resultar en la suspensión de tu cuenta.
-    </p>
-    <h3 class="text-lg font-bold mb-4">Contacto</h3>
-    <p class="text-gray-700">
-        Si tienes dudas sobre nuestras políticas, puedes contactarnos en <a href="mailto:soporte@.com" class="underline text-blue-600">administrativo@authentic.com.co</a>.
+        ✔ Leí, entiendo y acepto la Política de Tratamiento de Datos Personales<br>
+        ✔ Acepto los términos y condiciones de uso de INGENIOS EMPRESA DE SERVICIOS S.A.S
     </p>
 @endsection

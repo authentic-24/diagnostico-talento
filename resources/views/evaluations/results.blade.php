@@ -30,25 +30,45 @@
                         });
                     </script>
                 </div>
+                <div class="flex justify-center items-center mb-0">
+                    <img src="{{ asset('images/Logo1.png') }}" alt="Yo Soy" class="h-20 w-auto mb-2">
+                </div>
+                <div class="flex justify-center items-center mb-0">
+                    <img src="{{ asset('images/authentic_logo.png') }}" alt="Authentic" class="h-16 w-auto">
+                </div>
                 <div class="flex justify-center items-center min-h-[300px] sm:min-h-[300px]">
                     <div class="w-full max-w-full sm:max-w-2xl mx-auto">
-                        <div class="w-full h-56 sm:h-[320px]">
+                        <div class="w-full h-[600px]">
                             <canvas id="radarChart" class="w-full h-full" style="display: block; margin: auto;"></canvas>
                         </div>
                     </div>
                 </div>
 
+                <div class="mb-6 flex items-center gap-4">
+                    <div>
+                        <h4 class="text-lg font-bold mb-1">Guía de interpretación de resultados</h4>
+                        <ul class="list-disc pl-6 text-gray-700 text-sm">
+                            <li><strong>1:</strong> Casi nunca. Acción muy poco frecuente. Indica áreas que requieren atención y desarrollo.</li>
+                            <li><strong>2:</strong> Ocasionalmente. Frecuencia irregular. Señala comportamientos presentes pero poco consistentes.</li>
+                            <li><strong>3:</strong> Frecuentemente. Ocurre de forma habitual. Refleja fortalezas consolidadas y prácticas regulares.</li>
+                            <li><strong>4:</strong> Constantemente. Ocurre siempre o de forma continua. Representa excelencia y dominio en el área evaluada.</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div class="mt-0 flex flex-col gap-2">
+                    @php
+                        $palette = ['#3b82f6','#f59e42','#ef4444','#a855f7','#eab308','#14b8a6','#6366f1','#f43f5e','#64748b','#222'];
+                    @endphp
                     @foreach($labels as $i => $label)
                         @php
-                            $palette = ['#22c55e','#3b82f6','#f59e42','#ef4444','#a855f7','#eab308','#14b8a6','#6366f1','#f43f5e','#64748b'];
                             $color = $palette[$i % count($palette)];
-                            $percent = isset($data[$i]) ? round(($data[$i] / 4) * 100) : 0;
+                            $score = isset($data[$i]) ? $data[$i] : '-';
                         @endphp
                         <div class="flex items-center gap-2">
                             <span class="inline-block w-4 h-4 rounded-full" style="background-color:{{ $color }};"></span>
                             <span class="text-sm text-gray-700">{{ $label }}</span>
-                            <span class="text-xs text-gray-500 font-semibold">{{ $percent }}%</span>
+                            <span class="ml-2 text-xs text-gray-900 font-semibold">{{ $score }}</span>
                         </div>
                     @endforeach
                 </div>
@@ -75,9 +95,8 @@
                 <script>
                     const labels = @json($labels);
                     const data = @json($data);
-                    // Paleta de colores para los ítems
+                    // Paleta de colores para los ítems (sin verde)
                     const palette = [
-                        '#22c55e', // verde
                         '#3b82f6', // azul
                         '#f59e42', // naranja
                         '#ef4444', // rojo
@@ -86,7 +105,8 @@
                         '#14b8a6', // teal
                         '#6366f1', // indigo
                         '#f43f5e', // rosa
-                        '#64748b'  // gris
+                        '#64748b', // gris
+                        '#222'     // negro
                     ];
                     const colors = labels.map((_, i) => palette[i % palette.length]);
                     const ctx = document.getElementById('radarChart').getContext('2d');
@@ -97,9 +117,9 @@
                             datasets: [{
                                 label: 'Promedio por ítem',
                                 data: data,
-                                backgroundColor: 'rgba(34,197,94,0.05)',
-                                borderColor: 'rgba(34,197,94,1)',
-                                borderWidth: 6,
+                                backgroundColor: 'rgba(59,130,246,0.08)', // azul claro
+                                borderColor: '#888888', // gris
+                                borderWidth: 2,
                                 pointBackgroundColor: colors,
                                 pointBorderColor: colors
                             }]
@@ -108,7 +128,7 @@
                             responsive: true,
                             maintainAspectRatio: false,
                             layout: {
-                                padding: 120
+                                padding: 110
                             },
                             plugins: {
                                 legend: { position: 'bottom' },

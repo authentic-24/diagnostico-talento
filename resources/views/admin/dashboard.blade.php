@@ -94,6 +94,8 @@
                                 <tr class="bg-gray-100">
                                     <th class="px-4 py-2 border">ID</th>
                                     <th class="px-4 py-2 border">Usuario</th>
+                                    <th class="px-4 py-2 border">Empresa</th>
+                                    <th class="px-4 py-2 border">Cargo</th>
                                     <th class="px-4 py-2 border">Subject</th>
                                     <th class="px-4 py-2 border">Estado</th>
                                     <th class="px-4 py-2 border">Puntaje</th>
@@ -105,6 +107,8 @@
                                     <tr>
                                         <td class="px-4 py-2 border">{{ $evaluation->id }}</td>
                                         <td class="px-4 py-2 border">{{ $evaluation->evaluator->name ?? 'N/A' }}</td>
+                                        <td class="px-4 py-2 border">{{ $evaluation->evaluator->empresa ?? 'N/A' }}</td>
+                                        <td class="px-4 py-2 border">{{ $evaluation->evaluator->cargo ?? 'N/A' }}</td>
                                         <td class="px-4 py-2 border">{{ $evaluation->subject->name ?? 'N/A' }}</td>
                                         <td class="px-4 py-2 border">{{ ucfirst($evaluation->status) }}</td>
                                         <td class="px-4 py-2 border">{{ $evaluation->total_score ?? 'N/A' }}</td>
