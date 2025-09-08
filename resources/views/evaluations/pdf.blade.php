@@ -16,13 +16,13 @@
     </style>
 </head>
 <body>
-    <div class="header" style="page-break-inside: avoid;">
-        {{-- <div>
+    {{-- <div class="header" style="page-break-inside: avoid;">
+        <div>
             <div class="company">{{ $companyName }}</div>
             <div class="user">Evaluado: {{ $userName }}</div>
             <strong>Fecha:</strong> {{ $evaluation->created_at->format('d/m/Y H:i') }}<br>
-        </div> --}}
-    </div>
+        </div> 
+    </div>--}}
     <div class="section" style="page-break-inside: avoid;">
         <div>
             <div class="company">{{ $companyName }}</div>
