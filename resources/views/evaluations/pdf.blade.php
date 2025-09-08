@@ -17,13 +17,18 @@
 </head>
 <body>
     <div class="header" style="page-break-inside: avoid;">
+        {{-- <div>
+            <div class="company">{{ $companyName }}</div>
+            <div class="user">Evaluado: {{ $userName }}</div>
+            <strong>Fecha:</strong> {{ $evaluation->created_at->format('d/m/Y H:i') }}<br>
+        </div> --}}
+    </div>
+    <div class="section" style="page-break-inside: avoid;">
         <div>
             <div class="company">{{ $companyName }}</div>
             <div class="user">Evaluado: {{ $userName }}</div>
             <strong>Fecha:</strong> {{ $evaluation->created_at->format('d/m/Y H:i') }}<br>
         </div>
-    </div>
-    <div class="section" style="page-break-inside: avoid;">
         @if(isset($chartImage))
             <div style="text-align:center; margin-bottom:20px;">
                 <img src="{{ $chartImage }}" alt="Gráfico de resultados" style="max-width:700px; width:100%;">
