@@ -8,7 +8,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                         <a href="{{ route('dashboard') }}">
-                            <img src="{{ asset('images/logo-app.png') }}" alt="App Logo" class="block h-14 w-auto" style="max-height:56px;" />
+                            <img src="{{ asset('images/authentic_logo.png') }}" alt="App Logo" class="block h-14 w-auto" style="max-height:56px;" />
                         </a>
                 </div>
 
@@ -36,12 +36,12 @@
                         {{-- Enlace para enviar evaluación (puede requerir lógica extra) --}}
                         {{-- <x-nav-link :href="route('evaluations.submit', ['evaluation' => 1])">Enviar Evaluación</x-nav-link> --}}
                         @if(auth()->user() && auth()->user()->hasRole('admin'))
-                            <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                            {{-- <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                                     <span class="inline-flex items-center gap-1">
                                         <i class="fa-solid fa-user-gear text-indigo-500"></i>
                                         Administración de Usuarios
                                     </span>
-                            </x-nav-link>
+                            </x-nav-link> 
                             <x-nav-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')">
                                     <span class="inline-flex items-center gap-1">
                                         <i class="fa-solid fa-boxes-stacked text-blue-500"></i>
@@ -65,7 +65,7 @@
                                         <i class="fa-solid fa-question text-purple-500"></i>
                                         Administración de Preguntas
                                     </span>
-                            </x-nav-link>
+                            </x-nav-link>--}}
                         @endif
                 </div>
             </div>
@@ -96,6 +96,40 @@
                                     Perfil
                                 </span>
                         </x-dropdown-link>
+                        @if (auth()->user() && auth()->user()->hasRole('admin'))
+                            <x-dropdown-link :href="route('admin.users.index')">
+                                    <span class="inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-user-gear text-indigo-500"></i>
+                                        Administración de Usuarios
+                                    </span>
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('admin.items.index')" :active="request()->routeIs('admin.items.*')">
+                                    <span class="inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-boxes-stacked text-blue-500"></i>
+                                        Administración de Ítems
+                                    </span>
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('admin.subjects.index')" :active="request()->routeIs('admin.subjects.*')">
+                                    <span class="inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-users text-gray-500"></i>
+                                        Sujetos
+                                    </span>
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('admin.prompts.index')" :active="request()->routeIs('admin.prompts.*')">
+                                    <span class="inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-lightbulb text-yellow-500"></i>
+                                        Prompts
+                                    </span>
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('admin.questions.index')" :active="request()->routeIs('admin.questions.*')">
+                                    <span class="inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-question text-purple-500"></i>
+                                        Administración de Preguntas
+                                    </span>
+                            </x-dropdown-link>
+
+                            
+                        @endif
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">

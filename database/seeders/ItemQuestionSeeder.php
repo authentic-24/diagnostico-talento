@@ -55,7 +55,7 @@ class ItemQuestionSeeder extends Seeder
                 ]
             ],
             [
-                'title' => 'Gestión del Conocimiento (Aquello que yo quiero aprender)',
+                'title' => 'Gestión del Conocimiento',
                 'description' => 'Plasticidad Neuronal y la Neurogénesis. El aprendizaje continuo es la clave de la plasticidad neuronal, la capacidad del cerebro para cambiar y adaptarse. La gestión del conocimiento, entendida como la promoción de nuevos aprendizajes y el desarrollo profesional, fomenta la formación de nuevas sinapsis y, en el hipocampo, la neurogénesis (la creación de nuevas neuronas). Proporcionar oportunidades de aprendizaje no solo aumenta las habilidades, sino que también mantiene al 🧠 cerebro ágil, activo y resiliente al estrés.',
                 'questions' => [
                     '¿La compañía cuenta con programas de mentoría internas y/o externas?',
@@ -77,7 +77,7 @@ class ItemQuestionSeeder extends Seeder
                     '¿El plan de desarrollo lo decide principalmente el líder o hay participación activa del colaborador?',
                     '¿La empresa identifica y potencia al "top talent" (ej. el 10% de la compañía) a través de múltiples evaluaciones?',
                     '¿Se realizan intercambios o benchmarking con otras compañías para el desarrollo de los colaboradores?',
-                    '¿Existen "planes de training" o rotaciones de roles (ej. comerciales en logística), logren desarrollar sus powers skill o competencias técnicas?',
+                    '¿Existen "planes de trainee" o rotaciones de roles (ej. comerciales en logística), logren desarrollar sus powers skill o competencias técnicas?',
                     '¿Fomenta movilidad horizontal, rotación de cargos, movilidad Interdepartamental, proyectos espaciales o asignaciones temporales y movilidad geográfica, y el crecimiento de carrera dentro de la organización?'
                 ]
             ],

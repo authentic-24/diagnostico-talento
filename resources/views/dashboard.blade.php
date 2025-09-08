@@ -13,7 +13,7 @@
                     <p class="mb-4">Aquí puedes ver el estado de tus encuestas y evaluaciones.</p>
                     <hr class="mb-4">
                     <h4 class="text-md font-semibold mb-2">Tus evaluaciones recientes:</h4>
-                    <canvas id="userEvaluationsChart" height="100"></canvas>
+                    {{-- <canvas id="userEvaluationsChart" height="100"></canvas> --}}
                     @if(isset($evaluations) && $evaluations->count())
                         <ul class="list-disc ml-6 mt-6">
                             @foreach($evaluations->take(5) as $evaluation)
@@ -38,7 +38,7 @@
             </div>
         </div>
     </div>
-    @push('scripts')
+    {{-- @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const ctx = document.getElementById('userEvaluationsChart').getContext('2d');
@@ -79,5 +79,5 @@
             }
         });
     </script>
-    @endpush
+    @endpush --}}
 </x-app-layout>

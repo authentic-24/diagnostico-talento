@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $avgScore = \App\Models\Evaluation::where('status', 'completed')->avg('total_score');
         $latestUsers = User::orderBy('created_at', 'desc')->take(5)->get();
         $latestSubjects = Subject::orderBy('created_at', 'desc')->take(5)->get();
-        $latestEvaluations = \App\Models\Evaluation::with(['evaluator', 'subject'])->orderBy('created_at', 'desc')->take(5)->get();
+        $allEvaluations = \App\Models\Evaluation::with(['evaluator', 'subject'])->orderBy('created_at', 'desc')->get();
         return view('admin.dashboard', compact(
             'usersCount',
             'subjectsCount',
@@ -29,7 +29,7 @@ class DashboardController extends Controller
             'avgScore',
             'latestUsers',
             'latestSubjects',
-            'latestEvaluations'
+            'allEvaluations'
         ));
     }
 }

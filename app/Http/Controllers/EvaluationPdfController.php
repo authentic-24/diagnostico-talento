@@ -10,6 +10,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class EvaluationPdfController extends Controller
 {
     public function export($evaluationId)
+    // Depuración: mostrar el base64 recibido
+    // Quita este dd cuando verifiques que el campo llega correctamente
+
     {
         $evaluation = \App\Models\Evaluation::with(['subject', 'evaluator', 'responses'])->findOrFail($evaluationId);
         $companyName = $evaluation->evaluator->empresa ?? config('app.name');
@@ -36,6 +39,7 @@ class EvaluationPdfController extends Controller
 
         // El gráfico debe generarse en frontend y enviarse como base64 si lo necesitas en el PDF
         $chartImage = request()->input('chartImage'); // Opcional: base64 desde el frontend
+        $tableImage = request()->input('tableImage'); // Nueva imagen de la tabla
 
         $pdf = Pdf::loadView('evaluations.pdf', [
             'evaluation' => $evaluation,
@@ -43,6 +47,7 @@ class EvaluationPdfController extends Controller
             'userName' => $userName,
             'diagnosis' => $diagnosis,
             'chartImage' => $chartImage,
+            'tableImage' => $tableImage,
             'labels' => json_decode(request()->input('labels', '[]'), true),
             'data' => json_decode(request()->input('data', '[]'), true),
         ]);

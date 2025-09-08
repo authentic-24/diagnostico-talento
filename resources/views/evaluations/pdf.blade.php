@@ -29,12 +29,16 @@
                 <img src="{{ $chartImage }}" alt="Gráfico de resultados" style="max-width:700px; width:100%;">
             </div>
         @endif
-        @if(!empty($labels) && !empty($data))
-            <table style="width:100%; border-collapse:collapse; margin-bottom:18px;">
+        @if(isset($tableImage) && $tableImage)
+            <div style="text-align:center; margin-bottom:20px;">
+                <img src="{{ $tableImage }}" alt="Tabla de resultados" style="max-width:700px; width:100%;">
+            </div>
+        @elseif(!empty($labels) && !empty($data))
+            {{-- <table style="width:100%; border-collapse:collapse; margin-bottom:18px;">
                 <thead>
-                    <tr style="background:#f3f3f3;">
-                        <th style="border:1px solid #ccc; padding:8px; text-align:left;">Ítem</th>
-                        <th style="border:1px solid #ccc; padding:8px; text-align:center;">Puntaje</th>
+                    <tr style="background:#e0e7ff;">
+                        <th style="border:1px solid #888; padding:8px; text-align:left; background:#e0e7ff; color:#222;">Ítem</th>
+                        <th style="border:1px solid #888; padding:8px; text-align:center; background:#e0e7ff; color:#222;">Puntaje</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,22 +48,30 @@
                     @foreach($labels as $i => $label)
                         @php
                             $color = $palette[$i % count($palette)];
-                            $score = isset($data[$i]) ? $data[$i] : '-';
+                            $score = isset($data[$i]) ? round(($data[$i] / 4) * 100) : '-';
+                            if(is_numeric($score)) $total = isset($total) ? $total + $score : $score;
                         @endphp
-                        <tr>
-                            <td style="border:1px solid #ccc; padding:8px; display:flex; align-items:center; gap:8px;">
+                        <tr style="background:{{ $i % 2 == 0 ? '#f3f4f6' : '#fff' }};">
+                            <td style="border:1px solid #888; padding:8px;">
                                 <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:{{ $color }};margin-right:8px;"></span>
-                                <span style="font-size:0.95em;color:#333;">{{ $label }}</span>
+                                <span style="font-size:0.95em;color:#222;">{{ $label }}</span>
                             </td>
-                            <td style="border:1px solid #ccc; padding:8px; text-align:center; font-weight:bold;">{{ $score }}</td>
+                            <td style="border:1px solid #888; padding:8px; text-align:center; font-weight:bold; color:#222;">{{ is_numeric($score) ? $score . '%' : $score }}</td>
                         </tr>
                     @endforeach
+                    <tr style="background:#e0e7ff;">
+                        <td style="border:1px solid #888; padding:8px; font-weight:bold; text-align:right; color:#222;">Total</td>
+                        <td style="border:1px solid #888; padding:8px; text-align:center; font-weight:bold; color:#222;">{{ isset($total) && $total > 0 ? round($total / count($labels)) . '%' : '-' }}</td>
+                    </tr>
                 </tbody>
-            </table>
+            </table> --}}
         @endif
         <h4 style="font-size:1.2em; font-weight:bold; margin-bottom:10px;">Informe diagnóstico</h4>
     <div style="font-size:1em; white-space:pre-line; margin-top:-16px; line-height:1.05;">
         {!! nl2br(e($diagnosis)) !!}
+        </div>
+        <div style="margin-top:40px; text-align:center; font-size:12px; color:#555;">
+            Derechos de autor de Ingenios sas, fecha: {{ date('d/m/Y') }}
         </div>
     </div>
 </body>

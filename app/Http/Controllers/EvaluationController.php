@@ -53,6 +53,17 @@ class EvaluationController extends Controller
 
         // Buscar si ya existe el análisis guardado
         $analysisRecord = \App\Models\EvaluationAnalysis::where('evaluation_id', $evaluation->id)->first();
+        // Usar siempre el texto fijo proporcionado por el usuario
+        $analysis = "Apreciaciones de tu diagnóstico\n\nRRHH como Arquitectos del Cerebro Organizacional, comprender y optimizar los sistemas biológicos que impulsan la motivación, la creatividad y el bienestar. \n\n1. De la Cultura al Cableado Neural\nNo basta con definir valores; hay que vivirlos para generar coherencia y confianza. Cada acción de la empresa debe ser una señal para el cerebro de sus colaboradores. Un entorno de trabajo coherente con los valores que promueve activa la liberación de dopamina y oxitocina, creando lealtad y seguridad psicológica.\n \n2. De los Procesos a la Eficiencia Cerebral\nLa sobrecarga de información y los procesos complejos agotan los recursos mentales. La clave es liberar al cerebro de tareas tediosas para que pueda concentrarse en lo que realmente importa.\n\n3. Del Liderazgo Tradicional al empoderar a cada individuo para que gestione su propio bienestar. Entender la neuroplasticidad nos permite desarrollar la capacidad de adaptarnos y crecer.\n\n4. Del Bienestar al Hardware Biológico\nLa salud mental no es un lujo; es la base para el rendimiento. Las empresas deben proteger el eje HPA, el sistema biológico de respuesta al estrés.\n \nAl adoptar esta visión, RRHH se convierte en un socio estratégico que entiende y optimiza la maquinaria más poderosa de la organización: el cerebro humano. Esto no es una tendencia, es el futuro de la gestión de talento.";
+        // Guardar el análisis en la base de datos si no existe
+        if (!$analysisRecord) {
+            \App\Models\EvaluationAnalysis::updateOrCreate(
+                ['evaluation_id' => $evaluation->id],
+                ['prompt' => $prompt, 'analysis' => $analysis]
+            );
+        }
+        /*
+        // --- API Gemini (comentado por solicitud del usuario) ---
         if ($analysisRecord && $analysisRecord->analysis) {
             $analysis = $analysisRecord->analysis;
         } else {
@@ -84,6 +95,8 @@ class EvaluationController extends Controller
                 ['prompt' => $prompt, 'analysis' => $analysis]
             );
         }
+        // --- Fin API Gemini ---
+        */
 
         return view('evaluations.results', compact('evaluation', 'labels', 'data', 'analysis'));
     }
@@ -160,13 +173,15 @@ class EvaluationController extends Controller
             ]);
         }
 
-        // Calcular el puntaje promedio en escala 1-4
+        // Calcular el puntaje como porcentaje
         $responses = \App\Models\Response::where('evaluation_id', $evaluation->id)->get();
         $totalQuestions = $responses->count();
         $sumScore = $responses->sum('value');
-        $avgScore = $totalQuestions > 0 ? round($sumScore / $totalQuestions, 2) : 0;
+        $maxScore = $totalQuestions * 4;
+        $percentScore = $maxScore > 0 ? round(($sumScore / $maxScore) * 100, 1) : 0;
+
         $evaluation->status = 'completed';
-        $evaluation->total_score = $avgScore;
+        $evaluation->total_score = $percentScore;
         $evaluation->completed_at = now();
         $evaluation->save();
 

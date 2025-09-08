@@ -88,7 +88,7 @@
                                 <i class="fa-solid fa-file-excel mr-2"></i> Exportar a Excel
                             </a>
                         </div>
-                        <canvas id="evaluationsChart" height="100"></canvas>
+                        {{-- <canvas id="evaluationsChart" height="100"></canvas> --}}
                         <table class="w-full border-collapse border mt-6">
                             <thead>
                                 <tr class="bg-gray-100">
@@ -103,7 +103,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($latestEvaluations as $evaluation)
+                                @foreach($allEvaluations as $evaluation)
                                     <tr>
                                         <td class="px-4 py-2 border">{{ $evaluation->id }}</td>
                                         <td class="px-4 py-2 border">{{ $evaluation->evaluator->name ?? 'N/A' }}</td>
@@ -111,7 +111,9 @@
                                         <td class="px-4 py-2 border">{{ $evaluation->evaluator->cargo ?? 'N/A' }}</td>
                                         <td class="px-4 py-2 border">{{ $evaluation->subject->name ?? 'N/A' }}</td>
                                         <td class="px-4 py-2 border">{{ ucfirst($evaluation->status) }}</td>
-                                        <td class="px-4 py-2 border">{{ $evaluation->total_score ?? 'N/A' }}</td>
+                                        <td class="px-4 py-2 border">
+                                            {{ $evaluation->total_score !== null ? $evaluation->total_score . '%' : 'N/A' }}
+                                        </td>
                                         <td class="px-4 py-2 border">{{ $evaluation->created_at->format('d/m/Y') }}</td>
                                     </tr>
                                 @endforeach
@@ -126,14 +128,14 @@
                             type: 'bar',
                             data: {
                                 labels: [
-                                    @foreach($latestEvaluations as $evaluation)
+                                    @foreach($allEvaluations as $evaluation)
                                         '{{ $evaluation->subject->name ?? "N/A" }}',
                                     @endforeach
                                 ],
                                 datasets: [{
-                                    label: 'Puntaje',
+                                    label: 'Puntaje (%)',
                                     data: [
-                                        @foreach($latestEvaluations as $evaluation)
+                                        @foreach($allEvaluations as $evaluation)
                                             {{ $evaluation->total_score ?? 0 }},
                                         @endforeach
                                     ],
@@ -148,7 +150,7 @@
                                     legend: { display: false },
                                     title: {
                                         display: true,
-                                        text: 'Puntaje de las últimas evaluaciones'
+                                        text: 'Puntaje de todas las evaluaciones'
                                     }
                                 },
                                 scales: {

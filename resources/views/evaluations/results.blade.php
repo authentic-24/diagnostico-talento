@@ -16,11 +16,13 @@
                         <input type="hidden" name="labels" id="labelsInput">
                         <input type="hidden" name="data" id="dataInput">
                         <input type="hidden" name="chartImage" id="chartImageInput">
+                        <input type="hidden" name="tableImage" id="tableImageInput">
                         <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded shadow hover:bg-red-700 transition" id="exportPdfBtn">
                             <i class="fas fa-file-pdf mr-2 text-xl"></i>
                             Exportar PDF
                         </button>
                     </form>
+                    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
                             var labels = @json($labels);
@@ -28,30 +30,45 @@
                             document.getElementById('labelsInput').value = JSON.stringify(labels);
                             document.getElementById('dataInput').value = JSON.stringify(data);
                         });
+                        document.getElementById('exportPdfForm').addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            var form = this;
+                            var table = document.querySelector('table.min-w-full');
+                            if (!table) { form.submit(); return; }
+                            html2canvas(table).then(function(canvas) {
+                                var tableImage = canvas.toDataURL('image/png');
+                                document.getElementById('tableImageInput').value = tableImage;
+                                form.submit();
+                            });
+                        });
                     </script>
-                </div>
-                <div class="flex justify-center items-center mb-0">
-                    <img src="{{ asset('images/Logo1.png') }}" alt="Yo Soy" class="h-20 w-auto mb-2">
                 </div>
                 <div class="flex justify-center items-center mb-0">
                     <img src="{{ asset('images/authentic_logo.png') }}" alt="Authentic" class="h-16 w-auto">
                 </div>
+                <div class="flex justify-center items-center mb-0">
+                    <img src="{{ asset('images/Logo1.png') }}" alt="Yo Soy" class="h-20 w-auto mb-2">
+                </div>
+                
                 <div class="flex justify-center items-center min-h-[300px] sm:min-h-[300px]">
-                    <div class="w-full max-w-full sm:max-w-2xl mx-auto">
-                        <div class="w-full h-[600px]">
-                            <canvas id="radarChart" class="w-full h-full" style="display: block; margin: auto;"></canvas>
+                        <div class="w-full mx-auto">
+                            <div class="w-full" style="max-width:100vw;">
+                                <canvas id="radarChart"
+                                    class="w-full"
+                                    style="display:block; margin:auto; max-width:100vw; height:60vw; min-height:320px; max-height:600px;"
+                                ></canvas>
+                            </div>
                         </div>
-                    </div>
                 </div>
 
-                <div class="mb-6 flex items-center gap-4">
+                <div class="mb-6 flex flex-col gap-2">
                     <div>
                         <h4 class="text-lg font-bold mb-1">Guía de interpretación de resultados</h4>
-                        <ul class="list-disc pl-6 text-gray-700 text-sm">
-                            <li><strong>1:</strong> Casi nunca. Acción muy poco frecuente. Indica áreas que requieren atención y desarrollo.</li>
-                            <li><strong>2:</strong> Ocasionalmente. Frecuencia irregular. Señala comportamientos presentes pero poco consistentes.</li>
-                            <li><strong>3:</strong> Frecuentemente. Ocurre de forma habitual. Refleja fortalezas consolidadas y prácticas regulares.</li>
-                            <li><strong>4:</strong> Constantemente. Ocurre siempre o de forma continua. Representa excelencia y dominio en el área evaluada.</li>
+                        <ul class="list-disc pl-6 text-gray-700 text-sm mb-2">
+                            <li><strong>1 (0-25%):</strong> Casi nunca. Acción muy poco frecuente. Área crítica que requiere intervención y desarrollo.</li>
+                            <li><strong>2 (26-50%):</strong> Ocasionalmente. Frecuencia irregular. Comportamientos presentes pero poco consistentes. Oportunidad de mejora.</li>
+                            <li><strong>3 (51-75%):</strong> Frecuentemente. Ocurre de forma habitual. Fortalezas consolidadas y prácticas regulares.</li>
+                            <li><strong>4 (76-100%):</strong> Constantemente. Ocurre siempre o de forma continua. Excelencia y dominio en el área evaluada.</li>
                         </ul>
                     </div>
                 </div>
@@ -67,20 +84,26 @@
                         <tbody>
                             @php
                                 $palette = ['#3b82f6','#f59e42','#ef4444','#a855f7','#eab308','#14b8a6','#6366f1','#f43f5e','#64748b','#222'];
+                                $total = 0;
                             @endphp
                             @foreach($labels as $i => $label)
                                 @php
                                     $color = $palette[$i % count($palette)];
-                                    $score = isset($data[$i]) ? $data[$i] : '-';
+                                    $score = isset($data[$i]) ? round(($data[$i] / 4) * 100) : '-';
+                                    if(is_numeric($score)) $total += $score;
                                 @endphp
                                 <tr>
                                     <td class="px-4 py-2 border flex items-center gap-2">
                                         <span class="inline-block w-4 h-4 rounded-full" style="background-color:{{ $color }};"></span>
                                         <span class="text-sm text-gray-700">{{ $label }}</span>
                                     </td>
-                                    <td class="px-4 py-2 border text-center font-bold">{{ $score }}</td>
+                                    <td class="px-4 py-2 border text-center font-bold">{{ is_numeric($score) ? $score . '%' : $score }}</td>
                                 </tr>
                             @endforeach
+                            <tr class="bg-gray-100">
+                                <td class="px-4 py-2 border font-bold text-right">Total</td>
+                                <td class="px-4 py-2 border text-center font-bold">{{ $total > 0 ? round($total / count($labels)) . '%' : '-' }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -122,13 +145,14 @@
                     ];
                     const colors = labels.map((_, i) => palette[i % palette.length]);
                     const ctx = document.getElementById('radarChart').getContext('2d');
+                    const percentData = data.map(v => Math.round((v / 4) * 100));
                     window.radarChartInstance = new Chart(ctx, {
                         type: 'radar',
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: 'Promedio por ítem',
-                                data: data,
+                                label: 'Porcentaje por ítem',
+                                data: percentData,
                                 backgroundColor: 'rgba(59,130,246,0.08)', // azul claro
                                 borderColor: '#888888', // gris
                                 borderWidth: 2,
@@ -152,8 +176,8 @@
                             scales: {
                                 r: {
                                     min: 0,
-                                    max: 4,
-                                    ticks: { stepSize: 1 },
+                                    max: 100,
+                                    ticks: { stepSize: 20, callback: value => value + '%' },
                                     pointLabels: {
                                         display: false
                                     }
@@ -222,12 +246,66 @@
                     document.getElementById('exportPdfForm').addEventListener('submit', function(e) {
                         e.preventDefault(); // Evitar envío inmediato
                         var form = this;
-                        var canvas = document.getElementById('radarChart');
-                        if (canvas) {
-                            var chartImage = canvas.toDataURL('image/png');
-                            document.getElementById('chartImageInput').value = chartImage;
+                        // Detectar si es móvil
+                        var isMobile = window.innerWidth < 640;
+                        if (isMobile) {
+                            // Canvas temporal para exportar en móvil
+                            var tempCanvas = document.createElement('canvas');
+                            tempCanvas.width = 900;
+                            tempCanvas.height = 900;
+                            tempCanvas.style.display = 'none';
+                            document.body.appendChild(tempCanvas);
+                            var tempCtx = tempCanvas.getContext('2d');
+                            var tempChart = new Chart(tempCtx, {
+                                type: 'radar',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        label: 'Promedio por ítem',
+                                        data: data,
+                                        backgroundColor: 'rgba(59,130,246,0.08)',
+                                        borderColor: '#888888',
+                                        borderWidth: 2,
+                                        pointBackgroundColor: colors,
+                                        pointBorderColor: colors,
+                                        pointRadius: 10,
+                                        pointHoverRadius: 14,
+                                        pointBorderWidth: 4
+                                    }]
+                                },
+                                options: {
+                                    responsive: false,
+                                    maintainAspectRatio: false,
+                                    layout: { padding: 110 },
+                                    plugins: {
+                                        legend: { position: 'bottom' },
+                                        title: { display: false }
+                                    },
+                                    scales: {
+                                        r: {
+                                            min: 0,
+                                            max: 4,
+                                            ticks: { stepSize: 1 },
+                                            pointLabels: { display: false }
+                                        }
+                                    }
+                                }
+                            });
+                            setTimeout(function() {
+                                var chartImage = tempCanvas.toDataURL('image/png');
+                                document.getElementById('chartImageInput').value = chartImage;
+                                tempChart.destroy();
+                                tempCanvas.remove();
+                                form.submit();
+                            }, 900);
+                        } else {
+                            var canvas = document.getElementById('radarChart');
+                            if (canvas) {
+                                var chartImage = canvas.toDataURL('image/png');
+                                document.getElementById('chartImageInput').value = chartImage;
+                            }
+                            form.submit();
                         }
-                        form.submit(); // Enviar el formulario manualmente
                     });
                 </script>
                 

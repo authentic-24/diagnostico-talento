@@ -37,8 +37,7 @@
                         ];
                     @endphp
                     @if($evaluation->status !== 'completed')
-                        <form action="{{ route('evaluations.submit', $evaluation) }}" method="POST"
-                              onsubmit="return confirm('¿Seguro que deseas enviar esta evaluación?')">
+                <form id="evaluationForm" action="{{ route('evaluations.submit', $evaluation) }}" method="POST">
                             @csrf
                             <div class="mb-6">
                                 <h4 class="text-md font-bold mb-2">Guía de opciones de respuesta:</h4>
@@ -113,12 +112,63 @@
                             @endforelse
                             
                             <div class="mt-8 flex flex-col sm:flex-row justify-end gap-4">
-                                <button type="submit"
+                                <button type="button" id="openConfirmModal"
                                         class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg text-lg font-bold flex items-center gap-2 w-full sm:w-auto">
                                     <i class="fa-solid fa-paper-plane"></i> Enviar Evaluación
                                 </button>
                             </div>
                         </form>
+                        <!-- Modal de confirmación -->
+                        <div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+                            <div class="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full text-center">
+                                <h3 class="text-lg font-bold mb-4">¿Seguro que deseas enviar la evaluación?</h3>
+                                <div class="flex justify-center gap-4 mt-6">
+                                    <button id="cancelModalBtn" type="button" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold">Cancelar</button>
+                                    <button id="confirmModalBtn" type="button" class="px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white font-bold">Sí, enviar</button>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    @push('scripts')
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const openConfirmModal = document.getElementById('openConfirmModal');
+                            const confirmModal = document.getElementById('confirmModal');
+                            const cancelModalBtn = document.getElementById('cancelModalBtn');
+                            const confirmModalBtn = document.getElementById('confirmModalBtn');
+                            const evaluationForm = document.getElementById('evaluationForm');
+
+                            openConfirmModal.addEventListener('click', function() {
+                                // Validar que todos los campos requeridos estén respondidos
+                                let valid = true;
+                                let missing = [];
+                                // Buscar todos los inputs radio requeridos
+                                const requiredRadios = evaluationForm.querySelectorAll('input[type="radio"][required]');
+                                const questionNames = Array.from(requiredRadios).map(r => r.name);
+                                // Eliminar duplicados
+                                const uniqueNames = [...new Set(questionNames)];
+                                uniqueNames.forEach(name => {
+                                    const checked = evaluationForm.querySelector(`input[name='${name}']:checked`);
+                                    if (!checked) {
+                                        valid = false;
+                                        missing.push(name);
+                                    }
+                                });
+                                if (!valid) {
+                                    alert('Por favor responde todas las preguntas obligatorias antes de enviar la evaluación.');
+                                    return;
+                                }
+                                confirmModal.classList.remove('hidden');
+                            });
+                            cancelModalBtn.addEventListener('click', function() {
+                                confirmModal.classList.add('hidden');
+                            });
+                            confirmModalBtn.addEventListener('click', function() {
+                                evaluationForm.submit();
+                            });
+                        });
+                    </script>
+                    @endpush
                     @else
                         @forelse ($items as $item)
                             <div class="mb-8">
