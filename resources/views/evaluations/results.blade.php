@@ -24,23 +24,29 @@
                     </form>
                     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
                     <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            var labels = @json($labels);
-                            var data = @json($data);
-                            document.getElementById('labelsInput').value = JSON.stringify(labels);
-                            document.getElementById('dataInput').value = JSON.stringify(data);
-                        });
-                        document.getElementById('exportPdfForm').addEventListener('submit', function(e) {
-                            e.preventDefault();
-                            var form = this;
-                            var table = document.querySelector('table.min-w-full');
-                            if (!table) { form.submit(); return; }
-                            html2canvas(table).then(function(canvas) {
-                                var tableImage = canvas.toDataURL('image/png');
-                                document.getElementById('tableImageInput').value = tableImage;
-                                form.submit();
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var labels = @json($labels);
+                                var data = @json($data);
+                                document.getElementById('labelsInput').value = JSON.stringify(labels);
+                                document.getElementById('dataInput').value = JSON.stringify(data);
                             });
-                        });
+                            document.getElementById('exportPdfForm').addEventListener('submit', function(e) {
+                                e.preventDefault();
+                                var form = this;
+                                var table = document.querySelector('table.min-w-full');
+                                var chart = document.getElementById('radarChart');
+                                var tablePromise = table ? html2canvas(table).then(function(canvas) {
+                                    var tableImage = canvas.toDataURL('image/png');
+                                    document.getElementById('tableImageInput').value = tableImage;
+                                }) : Promise.resolve();
+                                var chartPromise = chart ? Promise.resolve(document.getElementById('radarChart').toDataURL('image/png')) : Promise.resolve(null);
+                                Promise.all([tablePromise, chartPromise]).then(function(results) {
+                                    if (results[1]) {
+                                        document.getElementById('chartImageInput').value = results[1];
+                                    }
+                                    form.submit();
+                                });
+                            });
                     </script>
                 </div>
                 <div class="flex justify-center items-center mb-0">
@@ -51,11 +57,12 @@
                 </div>
                 
                 <div class="flex justify-center items-center min-h-[300px] sm:min-h-[300px]">
-                        <div class="w-full mx-auto">
+                        <div class="w-full flex justify-center">
                             <div class="w-full" style="max-width:100vw;">
                                 <canvas id="radarChart"
+                                <canvas id="radarChart"
                                     class="w-full"
-                                    style="display:block; margin:auto; max-width:100vw; height:60vw; min-height:320px; max-height:600px;"
+                                    style="display:block; margin:auto; width:100vw; max-width:900px; height:110vw; min-height:500px; max-height:900px;"
                                 ></canvas>
                             </div>
                         </div>
@@ -158,17 +165,18 @@
                                 borderWidth: 2,
                                 pointBackgroundColor: colors,
                                 pointBorderColor: colors,
-                                pointRadius: 10, // tamaño de los puntos
-                                pointHoverRadius: 14, // tamaño al pasar el mouse
-                                pointBorderWidth: 4 // borde más grueso
+                                    // Ajuste responsivo para móviles
+                                    pointRadius: window.innerWidth < 640 ? 6 : 10,
+                                    pointHoverRadius: window.innerWidth < 640 ? 9 : 14,
+                                    pointBorderWidth: 4 // borde más grueso
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            layout: {
-                                padding: 110
-                            },
+                                layout: {
+                                        padding: window.innerWidth < 640 ? 20 : 180
+                                },
                             plugins: {
                                 legend: { position: 'bottom' },
                                 title: { display: false }
