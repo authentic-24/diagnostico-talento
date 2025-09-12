@@ -77,11 +77,13 @@
                                                     {!! preg_replace([
                                                         '/https:\/\/yo-soy\.co\//',
                                                         '/https:\/\/www\.docokids\.com/',
-                                                        '/Empathica\.com\.co\/empresas/'
+                                                        '/Empathica\.com\.co\/empresas/',
+                                                        '/https:\/\/www\.kiddy\.com\.co/'
                                                     ], [
                                                         '<a href="https://yo-soy.co/" target="_blank" class="text-blue-600 underline">https://yo-soy.co/</a>',
                                                         '<a href="https://www.docokids.com" target="_blank" class="text-blue-600 underline">https://www.docokids.com</a>',
-                                                        '<a href="https://empathica.com.co/iniciar-sesion" target="_blank" class="text-blue-600 underline">https://empathica.com.co/iniciar-sesion</a>'
+                                                        '<a href="https://empathica.com.co/iniciar-sesion" target="_blank" class="text-blue-600 underline">https://empathica.com.co/iniciar-sesion</a>',
+                                                        '<a href="https://www.kiddy.com.co" target="_blank" class="text-blue-600 underline">https://www.kiddy.com.co</a>'
                                                     ], $question->text) !!}
                                                 </span>
                                                 @if($question->required)
