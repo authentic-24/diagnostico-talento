@@ -106,7 +106,16 @@
                                 @foreach($allEvaluations as $evaluation)
                                     <tr>
                                         <td class="px-4 py-2 border">{{ $evaluation->id }}</td>
-                                        <td class="px-4 py-2 border">{{ $evaluation->evaluator->name ?? 'N/A' }}</td>
+                                            <td class="px-4 py-2 border">
+                                                @if($evaluation->status === 'completed')
+                                                    <a href="{{ route('evaluations.results', $evaluation->id) }}" target="_blank"
+                                                       class="text-blue-600 hover:text-blue-800 font-medium no-underline">
+                                                        {{ $evaluation->evaluator->name ?? 'N/A' }}
+                                                    </a>
+                                                @else
+                                                    {{ $evaluation->evaluator->name ?? 'N/A' }}
+                                                @endif
+                                            </td>
                                         <td class="px-4 py-2 border">{{ $evaluation->evaluator->empresa ?? 'N/A' }}</td>
                                         <td class="px-4 py-2 border">{{ $evaluation->evaluator->cargo ?? 'N/A' }}</td>
                                         <td class="px-4 py-2 border">{{ $evaluation->subject->name ?? 'N/A' }}</td>

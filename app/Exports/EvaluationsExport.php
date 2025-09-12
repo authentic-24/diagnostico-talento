@@ -16,6 +16,7 @@ class EvaluationsExport implements FromCollection, WithHeadings
                 return [
                     'ID' => $evaluation->id,
                     'Usuario' => $evaluation->evaluator->name ?? '',
+                    'Empresa' => $evaluation->evaluator->empresa ?? '',
                     'Subject' => $evaluation->subject->name ?? '',
                     'Estado' => $evaluation->status,
                     'Puntaje' => $evaluation->total_score,
@@ -29,6 +30,7 @@ class EvaluationsExport implements FromCollection, WithHeadings
         return [
             'ID',
             'Usuario',
+            'Empresa',
             'Subject',
             'Estado',
             'Puntaje',
